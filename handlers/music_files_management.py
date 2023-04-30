@@ -8,6 +8,7 @@ from aiogram.filters import Command
 from aiogram.filters.callback_data import CallbackData
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import StatesGroup, State
+from aiogram.types import InlineKeyboardMarkup
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 import filters
@@ -17,12 +18,23 @@ router = aiogram.Router()
 router.message(filters.ChatIsPrivateFilter())
 
 
-# Различные классы
+# Различные классы (по-хорошему это все надо в отдельные файлы, но лень)
 class TagEditorCallback(CallbackData, prefix="add_tag"):
     action: str
 
 
-def make_tag_keyboard():
+class AddMusic(StatesGroup):
+    input_title = State()
+    input_artist = State()
+    input_release_date = State()
+    input_path = State()
+    input_filename = State()
+    wait_action = State()
+    wait_file = State()
+
+
+# Вспомогательные функции
+def make_tag_keyboard() -> InlineKeyboardMarkup:
     builder = InlineKeyboardBuilder()
     builder.button(
         text="изменить заголовок", callback_data=TagEditorCallback(action="change_title")
@@ -45,25 +57,16 @@ def make_tag_keyboard():
     builder.button(
         text="Отменить", callback_data=TagEditorCallback(action="cancel")
     )
-    # Выравниваем кнопки по 4 в ряд, чтобы получилось 4 + 1
     builder.adjust(1)
     return builder.as_markup()
 
 
-class AddMusic(StatesGroup):
-    input_title = State()
-    input_artist = State()
-    input_release_date = State()
-    input_path = State()
-    input_filename = State()
-    wait_action = State()
-    wait_file = State()
-
-
-# Вспомогательные функции
-
-
-def get_file_descr(file_data: dict):
+def get_file_descr(file_data: dict) -> str:
+    """
+    составляет описание файла по словарю
+    :param file_data:
+    :return:
+    """
     text = (f"Заголовок: {file_data['title']}\n"
             f"Исполнитель: {file_data['artist']}\n"
             f"Дата релиза: {file_data['release_date']}\n"
@@ -72,6 +75,11 @@ def get_file_descr(file_data: dict):
 
 
 async def update_music_file_text(state: FSMContext):
+    """
+    обновление информации о файле который сейчас редактируется
+    :param state:
+    :return:
+    """
     with suppress(TelegramBadRequest):
         file_data = await state.get_data()
         await file_data["message"].edit_text(
@@ -216,7 +224,7 @@ async def callback_change_path(
 
 
 @router.callback_query(TagEditorCallback.filter(F.action == "change_filename"))
-async def callback_change_path(
+async def callback_change_filename(
         callback: types.CallbackQuery,
         callback_data: TagEditorCallback,
         state: FSMContext,
@@ -264,7 +272,7 @@ async def input_path(message: types.Message, state: FSMContext):
 
 
 @router.message(F.text, AddMusic.input_filename, filters.TextInputFilterOnlyText())
-async def input_path(message: types.Message, state: FSMContext):
+async def input_filename(message: types.Message, state: FSMContext):
     await state.update_data(filename=message.text)
     await state.set_state(AddMusic.wait_action)
     await update_music_file_text(state)

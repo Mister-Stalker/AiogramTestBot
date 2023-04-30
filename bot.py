@@ -4,7 +4,7 @@ import json5 as json
 import aiogram
 
 import configs_reader
-from handlers import fun, test, music_files_management, memes_management, start, info
+from handlers import fun, test, music_files_management, memes_management, start, info, help_handler
 
 
 async def setup_commands(bot: aiogram.Bot):
@@ -17,8 +17,9 @@ async def start_bot():
                       parse_mode="HTML")
     dp = aiogram.Dispatcher()
     dp.include_routers(
-        info.router,
         start.router,
+        info.router,
+        help_handler.router,
         fun.router,
         test.router,
         memes_management.router,

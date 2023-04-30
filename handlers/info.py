@@ -1,13 +1,8 @@
-import random
-
-import json5 as json
-
 from aiogram import Router, F, types
 from aiogram.filters import Command
 from aiogram.filters.callback_data import CallbackData
 from aiogram.types import Message, InlineKeyboardMarkup
 from aiogram.utils.keyboard import InlineKeyboardBuilder
-from aiogram.utils.markdown import hide_link
 
 import classes
 import filters
@@ -42,6 +37,7 @@ async def command_info(message: Message):
             f"Разработчик: @Mister_Stalker \n"
             f"Бот сделан при помощи Aiogram, также для базы данных (MongoDB) используется pymongo\n"
             f"Версия python: 3.11\n"
+            f"ссылка на github: https://github.com/Mister-Stalker/AiogramTestBot"
             )
     await message.reply(text, reply_markup=info_keyboard())
 
