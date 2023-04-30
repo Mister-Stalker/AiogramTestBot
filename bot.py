@@ -16,12 +16,11 @@ async def start_bot():
     bot = aiogram.Bot(token=configs_reader.config.bot_token.get_secret_value(),
                       parse_mode="HTML")
     dp = aiogram.Dispatcher()
-    dp.include_routers(  # questions.router,
+    dp.include_routers(
         info.router,
         start.router,
         fun.router,
         test.router,
-        # download_files.router,
         memes_management.router,
         music_files_management.router,
     )
