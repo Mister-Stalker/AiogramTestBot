@@ -1,0 +1,48 @@
+{
+  "start": {
+    "command": "start",
+    "description": "Запуск бота"
+  },
+  "help": {
+    "command": "help",
+    "description": "список команд и подсказки"
+  },
+  "info": {
+    "command": "info",
+    "description": "Информация о боте"
+  },
+  "meme": {
+    // for tg
+    "command": "meme",
+    // for tg
+    "description": "Отправить рандомный мем из коллекции",
+    "chat_types": [
+      "group",
+      "private"
+    ]
+  },
+  "test": {
+    "command": "test",
+    "description": "command for test",
+  },
+  "add_music_file": {
+    "command": "add_music_file",
+    "description": "(недоработано) Добавить музыкальный файл (необходимо прикрепить аудиофайл к сообщению)",
+    permissions: {
+      "any": [
+        "add_music_files",
+        "admin"
+      ]
+    }
+  },
+  "add_meme": {
+    "command": "add_meme",
+    "description": "Добавить мем в коллекцию",
+    permissions: {
+      "any": [
+        "add_meme",
+        "admin"
+      ]
+    }
+  }
+}
